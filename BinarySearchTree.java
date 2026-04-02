@@ -10,10 +10,12 @@ public class BinarySearchTree {
     }
 
     private Node recursiveInsert(Node current, int value) {
+        // hit an empty spot, put the new node here
         if (current == null) {
             return new Node(value);
         }
 
+        // go left if smaller, right if bigger
         if (value < current.value) {
             current.left = recursiveInsert(current.left, value);
         } else if (value > current.value) {
@@ -32,6 +34,7 @@ public class BinarySearchTree {
         }
     }
 
+    // returns the node if found, null if not
     private Node recursiveSearch(Node current, int value) {
         if (current == null || current.value == value) {
             return current;
@@ -44,6 +47,7 @@ public class BinarySearchTree {
         }
     }
 
+    // prints inorder: left, root, right
     public void inorderTraversal() {
         if (root == null) {
             System.out.println("Empty");
@@ -60,6 +64,7 @@ public class BinarySearchTree {
         }
     }
 
+    // prints postorder: left, right, root
     public void postorderTraversal() {
         if (root == null) {
             System.out.println("Empty");
@@ -76,7 +81,8 @@ public class BinarySearchTree {
         }
     }
 
-     public void preorderTraversal() {
+    // prints preorder: root, left, right
+    public void preorderTraversal() {
         if (root == null) {
             System.out.println("Empty");
             return;
@@ -90,38 +96,41 @@ public class BinarySearchTree {
             recursivePreorder(node.left);
             recursivePreorder(node.right);
         }
-     }
+    }
 
      public void delete(int value) {
         root = recursiveDelete(root, value);
      }
 
     private Node recursiveDelete(Node current, int value) {
+        // base case - value isn't in the tree
         if (current == null) {
             return null;
         }
 
+        // navigate left or right to find the node
         if (value < current.value) {
             current.left = recursiveDelete(current.left, value);
         } else if (value > current.value) {
             current.right = recursiveDelete(current.right, value);
         } else {
-            // Node with only one child or no child
+            // found it - now handle the 3 cases
+            // if theres no left child just replace with right (also covers leaf)
             if (current.left == null) {
                 return current.right;
             } else if (current.right == null) {
                 return current.left;
             }
 
-            // Node with two children: Get the inorder successor (smallest in the right subtree)
+            // has both children so we swap with the smallest on the right
             current.value = minValue(current.right);
-
-            // Delete the inorder successor
+            // then remove that value from the right subtree
             current.right = recursiveDelete(current.right, current.value);
         }
         return current;
     }
 
+    // goes all the way left to find the smallest value
     private int minValue(Node node) {
         int minv = node.value;
         while (node.left != null) {
@@ -137,10 +146,11 @@ public class BinarySearchTree {
 
     private int recursiveHeight(Node node) {
         if (node == null) {
-            return -1; // Height of an empty tree is -1
+            return -1; // empty tree is -1 per the assignment
         }
         int leftHeight = recursiveHeight(node.left);
         int rightHeight = recursiveHeight(node.right);
+        // take the bigger side and add 1 for current node
         return Math.max(leftHeight, rightHeight) + 1;
     }
 }
